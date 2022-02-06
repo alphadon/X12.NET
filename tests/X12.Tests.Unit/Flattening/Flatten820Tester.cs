@@ -26,7 +26,8 @@
             var doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            var fstream = new FileStream("ORD._820.Example1.txt", FileMode.Create);
+            var tempFile = Path.GetTempFileName();
+            var fstream = new FileStream(tempFile, FileMode.Create);
             var writer = new StreamWriter(fstream);
 
             writer.WriteLine("Transaction,Creation Date,Submitter Name, Borrower Last Name, Remittance ID");
@@ -49,6 +50,7 @@
             
             writer.Close();
             fstream.Close();
+            File.Delete(tempFile);
         }
 
         [Test]
