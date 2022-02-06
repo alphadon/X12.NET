@@ -62,14 +62,42 @@
                     try
                     {
                         var interchanges = parser.ParseMultiple(fs, encoding);
+                        string xml = string.Empty;
                 
                         foreach (var interchange in interchanges)
                         {
                             repo.Save(interchange, filename, Environment.UserName);
+
+                            try
+                            {
+                                xml = interchange.Serialize();
+                            }
+                            catch (Exception ex)
+                            {
+                                // Shhh!
+                            }
                         }
 
                         if (!string.IsNullOrWhiteSpace(archiveDirectory))
                         {
+                            try
+                            {
+                                if (!string.IsNullOrWhiteSpace(xml))
+                                {
+                                    string xmlFile = Path.Combine(archiveDirectory + @"XML\", $"{fi.Name}.xml");
+                                    if (File.Exists(xmlFile))
+                                        File.Delete(xmlFile);
+
+                                    File.WriteAllText(xmlFile, xml);
+                                }
+                            }
+                            catch (IOException ex)
+                            {
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
                             MoveTo(fi, parseDirectory, archiveDirectory);
                         }
                     }
